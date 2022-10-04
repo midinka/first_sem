@@ -78,7 +78,7 @@ void main() {
     int l, r;
     int* array;
     char act;
-    printf("Press 1 to exchange min and max in an array\nPress 2 to find uniq elements in an array:\n");
+    printf("Press 1 to exchange min and max in an array\nPress 2 to find uniq elements in an array\n");
     scanf("%c", &act);
     
     printf("Enter a left boarder of range:\n");
@@ -105,15 +105,11 @@ void main() {
     printf("\n");
     if (act == '1'){
         int* max = find_max(array, size);
-        printf("%d\n", *max);
+        printf("max: %d\n", *max);
         int* min = find_min(array, size);
-        printf("%d\n", *min);
-
+        printf("min: %d\n", *min);
         exchange_min_max(min, max);
-        printf("%d\n", *max);
-        printf("%d\n", *min);
-
-
+        printf("New array:\n");
         for (i = 0; i < size; i++) {
             printf("%d  ", array[i]);
         }

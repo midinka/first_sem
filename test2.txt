@@ -1,0 +1,4 @@
+abc bac cba 
+olololo
+print scan help
+this is the word hello

@@ -1,82 +1,142 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <math.h>
 #include <stdbool.h>
 
-int case_h(int number, int *res, bool found){
+#define UINTMAX 4294967295
+#define SIZE 33
+
+typedef unsigned int UINT;
+
+int stepen(int a, int b){
+    if (b == 0) return 1;
+    if (b == 1) return a;
+    int pow = a;
+    while (b > 1){
+        a *= pow;
+        b--;
+    }
+    return a;
+}
+
+void case_h(UINT var){
+    while (var <= 100){
+        printf("%u ", var);
+        var+=var;
+    }
+    printf("\n");
+}
+
+void case_p(UINT var){
+    int root = sqrt(var);
+    int i = 2;
+    for (; i <= root + 1; i++){
+        if (var % i == 0) {
+            printf("Number is not prime\n");
+            return;
+        }
+    }
+    printf("Number is prime\n");
+
+}
+
+char* my_itoa(int var, char* var_in_ascii, int base){
+    char r;
+    char *pb = var_in_ascii + SIZE - 1;
+    *pb--=0;
+    while (var){
+        r = var%base;
+        *pb--=r>9?r-10+'A':r+'0';
+        var/=base;
+    }
+    return pb+1;
+}
+
+
+void case_s(UINT var){
+    char var_in_ascii[33];
+    char *ptr = my_itoa(var, var_in_ascii, 10);
+    int i;
+    for (i = 0; i < 10; i++) {
+        if (*(ptr+i) == 0) break;
+        printf("%c ", *(ptr+i));
+    }
+    printf("\n");
+
+
+}
+
+void case_e(UINT var){
+    if (var > 10){
+        printf("Number is not correct. Please enter number <= 10\n");
+        return;
+    }
+    int i, j;
+    for (i = 1; i < 11; i++){
+        printf("-------%d-------\n", i);
+        for (j = 1; j <= var; j++){
+            int res = stepen(i, j);
+            printf("%d^%d = %9d\n", i, j, res);
+        }
+    }
+}
+
+void case_a(UINT var){
     int i = 1;
-    int k = 0;
-    for (; i < 101; i++){
-        if (i % number == 0){
-            res[k] = i;
-            k++;
-            found = 1;
-        }
+    int sum = 0;
+    while (var > 0){
+        sum += i;
+        i++;
+        var--;
     }
-    return k+1;
+    printf("%d\n", sum);
 }
 
-bool case_p(int number){
-    int i = 0;
-    if (0 < number < 2){
-        return 0;
+void case_f(UINT var){
+    int i = 1;
+    UINT factorial = 1;
+    while (var > 0 && factorial < UINTMAX){
+        factorial *= i;
+        i++;
+        var--;
     }
-    if (number > 1){
-        int kor = (int)(pow(number, 0.5)) + 1;
-        for(i; i < kor; i++){
-            if (number%i==0){
-                return 1;
-            }
-        }
-        return 0;
-    }
+    printf("%d\n", factorial);
 }
 
-int case_s(int number, int* res){
-    
-}
-
-int main(){
-    while(1){
-        printf("Enter the number:\n");
-        int number = 0;
-        scanf("%d", &number);
-        printf("%d\n", number);
-        printf("Enter the flag:\n");
-        char flag[2];
-        scanf("%s", flag);
-        printf("%d\n", number);
-        if (flag[0] != '-' && flag[0] != '/'){
-            printf("Wrong input. Try again.\n");
+void main(){
+    bool start = true;
+    while (start) {
+        UINT var = 1;
+        printf("Введите целое положительное число и следующий из флагов:\n-h -кратные числа в пределах 100\n-p - проверка на простоту\n-s - раздел на отдельный цифры\n-e - возвести 1-10 в степени 1-n\n-a - сумма всех чисел от 1 до n\n-f - факториал числа\nДля выхода введите любое число и через пробел 'q'.\n");
+        scanf("%u", &var);
+        if (var <= 0 ){
+            printf("Wrong value. Try again:\n");
             continue;
         }
-        int *res = (int *)malloc(100 * sizeof(int));
-        if (res == NULL){
-            printf("Memory error\n");
-            exit(1);
+        char po = getchar();
+        char flag = getchar();
+        char b = getchar();
+        if (flag == 'q'){
+            break;
         }
-        bool found = 0;
-        int size = 0;
-        int i = 0;
-        if (flag[1] == 'h'){
-            size = case_h(number, res, found);
-            if (found){
-                for (; i < size - 1; i++){
-                    printf("%d", res[i]);
-                }
-                printf("\n");
-            }else {
-                printf("Numbers were not found\n");
-            }
-        }
-        if (flag[1] == 'p'){
-            if (case_p(number)){
-                printf("The number %d is prime\n", number);
+        if (flag == '/' || flag == '-'){
+            if (b == 'h') {
+                case_h(var);
+            }else if (b == 'p') {
+                case_p(var);
+            }else if (b == 's') {
+                case_s(var);
+            }else if (b == 'e'){
+                case_e(var);
+            }else if (b == 'a'){
+                case_a(var);
+            }else if (b == 'f'){
+                case_f(var);
             }else{
-                printf("The number %d is not prime\n", number);
+                printf("Wrong flag. Try again:\n");
             }
-        }
-        if (flag[1] == 's'){
-
+        }else {
+            printf("Wrong flag. Try again:\n");
         }
     }
+    
 }

@@ -19,12 +19,12 @@ double foo(double l, double r, double e){
             l = c;
         }
     }
-    printf("%lf", (l + r) / 2.);
+    return (l + r) / 2.;
 }
 
 void main(){
     double l = 0.;
     double r = 1.;
     double e = 0.001;
-    foo(l, r, e);
+    printf("%lf", foo(l, r, e));
 }

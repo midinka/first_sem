@@ -23,20 +23,17 @@ void find_str(int count, char *string, ...){
         char cymbol;
         bool found = false;
         while (!feof(fi)){
-            count_symbol++;
             while ((cymbol = fgetc(fi)) == *tmp){
                 count_symbol++;
                 tmp++;
                 i--;
                 if (i == 0){
-                    count_symbol -= size_str;
-                    printf("The word ~%s~ is in the file %s starting with %d symbol\n", string, filename, count_symbol);
+                    printf("The word ~%s~ is in the file %s starting with %d symbol\n", string, filename, count_symbol - size_str + 1);
                     found = true;
-                    count_symbol += size_str;
                     break;
                 }
             }
-
+            count_symbol++;
             i = size_str;
             tmp = string;
         }

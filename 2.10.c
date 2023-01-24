@@ -17,12 +17,12 @@ int char_to_int(char c){
 int denominator(char *num_in_str){
     int i = 0;
     int j = 0;
-    char den[5];
+    //char den[5];
     while (num_in_str[i] != '/'){
         i++;
     }
     i++;
-    while (num_in_str[i] != '\0'){
+    /*while (num_in_str[i] != '\0'){
 //        if(isalpha(num_in_str[i])){
 //            den[j] = char_to_int(num_in_str[i]);
 //            i++;
@@ -34,8 +34,8 @@ int denominator(char *num_in_str){
 //        }
     }
     den[j++] = '\0';
-    int res = atoi(den);
-    return res;
+    int res =*/ return atoi(num_in_str + i);
+    //return res;
 }
 
 int *prost_del(int num, int *array){
@@ -55,12 +55,26 @@ int *prost_del(int num, int *array){
     return array;  
 }
 
-void task_10(int count, int base, ...){
+int* task_10(int count, int* flg, int base, ...){
+    int *res = (int*)malloc(sizeof(int) * count);
+    if (res==NULL){
+        *flg=1;
+        return res;
+    }     
     char **array = (char**)malloc(sizeof(char *) * count);
+    if (array==NULL){
+        free(res);
+        *flg=1;
+        return res;
+    }  
     int i = 0;
     va_list ptr;
     va_start(ptr, base);
     int *denominators = (int *)malloc(sizeof(int) * count);
+    if (denominators==NULL){
+        *flg=1;
+        return res;
+    }
 
     for (; i < count; i++){
         array[i] = (char *)malloc(sizeof(char) * LENGTH);
@@ -69,8 +83,8 @@ void task_10(int count, int base, ...){
     }
     
     int j = 0;
-    bool flag = 0;
     for (i = 0; i < count; i++){
+        int flag = 0;
         int buf1[8];
         for (int k = 0; k < 8; k++){
             buf1[k] = 0;
@@ -78,19 +92,50 @@ void task_10(int count, int base, ...){
         prost_del(denominators[i], buf1);
         for (j = 0; buf1[j] != 0; j++){
             if (base % buf1[j] != 0){
-                printf("%s has no final representation in %d base\n", array[i], base);
                 flag = 1;
             }
         }
-        if (!flag) printf("%s has final representation in %d base\n", array[i], base);
-    }
+        *res = flag;
+        res++;
+        if (!flag) {
+            //printf("%s has final representation in %d base\n", array[i], base);
 
+        }else{
+            //printf("%s has no final representation in %d base\n", array[i], base);
+    
+        }
+    }
+    for (i = 0; i < count; i++){
+        res--;
+    }
+    // free array
+    return res;
 }
 
 //2 3 7 - num
 //2 5 - base
 
 int main(){
-    task_10(3, 2, "10/11", "10/100", "1/10");
+    int *res;
+    int count = 3;
+    int base = 7;
+    char first[] = "7/49";
+    char second[] = "8/9";
+    char third[] = "84/343";
+    int flg = 0;
+    res = task_10(count, &flg, base, first, second, third);
+    if (flg == 1){
+        printf("Problems with memory\n");
+        return 1;
+    }
+    for (int i = 0; i < count; i++){
+        if (*res == 0){
+            printf("%d) yes\n", i);
+        }else{
+            printf("%d) no\n", i);
+        }
+        res++;
+    }
+    free(res);
     return 0;
 }

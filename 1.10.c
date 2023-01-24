@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define MAX_DIAP_VAL 10
 #define MIN_DIAP_VAL -10
@@ -13,32 +14,38 @@ struct Matrix{
     int **matrix;
     int row;
     int col;
+    bool stat;
 };
 
-struct Matrix generate_matrix(int row, int col){
+struct Matrix generate_matrix(int row, int col, bool* ){
+    struct Matrix mat;
     int **matrix = (int **)malloc(row * sizeof(int *));
-    if (!matrix);
-    if (row != col){
-
+    if (!matrix) {
+        mat.stat = 1;
+        return mat;
     }
     int i = 0;
     for(;i < row; i++){
         matrix[i] = (int *)malloc(col * sizeof(int));
-        if(!matrix[i]) ;
+        if(!matrix[i]){
+            //free
+            mat.stat = 1;
+            return mat;
+        }
         int j = 0;
         for(;j < col; j++){
             matrix[i][j] = rand() % (MAX_DIAP_VAL - MIN_DIAP_VAL + 1) + MIN_DIAP_VAL;
         }
     }
-    struct Matrix mat;
     mat.matrix = matrix;
     mat.row = row;
     mat.col = col;
+    mat.stat = 0;
     return mat;
 
 }
 
-struct Matrix generate_single_matrix(int row, int col){
+/*struct Matrix generate_single_matrix(int row, int col){
     int **matrix = (int **)malloc(row * sizeof(int *));
     int i = 0;
     for(;i < row; i++){
@@ -55,7 +62,7 @@ struct Matrix generate_single_matrix(int row, int col){
     mat.col = col;
     return mat;
 
-}
+}*/
 
 struct Matrix mult_matrix(struct Matrix mat1, struct Matrix mat2){
     struct Matrix res;
@@ -92,6 +99,13 @@ void printMat(struct Matrix m){
         printf("\n ");
     }
     printf("--------------------------\n");
+}
+
+void freeMatr(struct Matrix m){
+    for (int i = 0; i < m.row;i++){
+        free(m.matrix[i]);
+    }
+    free(m.matrix);
 }
 
 void GetMatr(struct Matrix mat, int i, int j, int **p){
@@ -134,8 +148,6 @@ int det(struct Matrix mat){
     if (m > 2){
         for(i = 0; i < m; i++){
             GetMatr(mat, i, 0, p);
-            printf("%d\n", mat.matrix[i][j]);
-            printMat(pe);
             d = d +  k * mat.matrix[i][0] * det(pe);
             k = -k;
         }
@@ -147,22 +159,30 @@ int main(){
     srand(time(NULL));
     int row = rand() % (MAX_DIAP_SIZE - MIN_DIAP_SIZE + 1) + MIN_DIAP_SIZE;
     int col = rand() % (MAX_DIAP_SIZE - MIN_DIAP_SIZE + 1) + MIN_DIAP_SIZE;
-    //scanf("%d %d", &row, &col);
     if (row>10 || row<1 || col>10 || col<1){
         printf("Wrong input\n");
         return -1;
     }
     struct Matrix a = generate_matrix(row, col);
     struct Matrix b = generate_matrix(row, col);
+    if (a.stat == 1 || b.stat == 1){
+        printf("Problems with memory\n");
+        return 1;
+    }
     struct Matrix c = mult_matrix(a, b);
-    //struct Matrix c = generate_single_matrix(3, 3);
     
     printMat(a);
     printMat(b);
-    printMat(c);
+    if (c.matrix != NULL){
+        printMat(c);
+    }else{
+        printf("Matrixes can't be multiplied\n");
+    }
     int d = det(c);
     printf("%d", d);
-
+    freeMatr(a);
+    freeMatr(b);
+    freeMatr(c);
 
     
 

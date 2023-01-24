@@ -28,7 +28,7 @@ int* search(int k, int l, int *res, int size){
     }
     i = 0;
     if (k <= 0 || l <= 0 || l > k){
-        perror("Не делайте так больше, пожалуйста!!\n");
+        perror("Wrong input\n");
         exit(NUMBER_IS_NOT_VALID);
     }
 
@@ -70,16 +70,20 @@ int* search(int k, int l, int *res, int size){
     return res;
 }
 
-int *finding_duplicate_one(int k, int l){
+int *find_one(int k, int l){
     int size = find_quantity(k, l);
-    int count = 0, i = 0, rem, n, num = (1 << k-1)-1, last_num = 1 << (k-1);
+    int count = 0;
+    int i = 0;
+    int rem;
+    int n;
+    int num = (1 << k-1)-1, last_num = 1 << (k-1);
     int *res = (int *)malloc(size * sizeof(int));
     for(; i < size; i++){
         res[i] = 0;
     }
     i = 0;
     if (k <= 0 || l <= 0 || l > k){
-        perror("Не делайте так больше, пожалуйста!!\n");
+        perror("Wrong input\n");
         exit(NUMBER_IS_NOT_VALID);
     }
 
@@ -94,15 +98,12 @@ int *finding_duplicate_one(int k, int l){
         n = num;
         while (n != 0){
             rem = n & 1;
-            if (rem == 1)
-            {
+            if (rem == 1){
                 count++;
             }
-            else
-            {
+            else{
                 if (count > 0) 
                 {count =0; break;}
-
             }
             n >>= 1;
         }
@@ -110,13 +111,12 @@ int *finding_duplicate_one(int k, int l){
             res[i] = num;
             i++;
         }
-
         count = 0;
     }
     return res;
 }
 
-void print_and_free_res(int *res, int size){
+void print_res(int *res, int size){
     for (int i = 0; i < size; i++){
         if (res[i] == 0)
             break;
@@ -128,27 +128,29 @@ void print_and_free_res(int *res, int size){
 
 int main(){
     int k, l;
-    printf("Напишите количество бит: ");
+    printf("Enter the quantity of bits: ");
     while (scanf("%d", &k) == 0){
         printf("Wrong input\n");
         while(getchar()!='\n');
     }
-    printf("Напишите количество единиц: ");
+    printf("Enter the quantity of '1': ");
     while (scanf("%d", &l) == 0){
         printf("Wrong input\n");
         while(getchar()!='\n');
     }
     if (l > k){
-        perror("Количество единиц должно быть меньше количества бит!!!!\n");
+        perror("The quantity of '1' must be less than the quantity of bits\n");
         exit(1);
     }
     int size = find_quantity(k, l);
     int *res = (int *)malloc(size * sizeof(int));
 
-    printf("Числа, содержащие %d бит и ровно %d единиц:\n", k, l);
-    print_and_free_res(search(k, l, res, size), size);
-    printf("Числа, содержащие %d бит и ровно %d подряд идущих единиц:\n", k, l);
-    print_and_free_res(finding_duplicate_one(k, l), size);
+    printf("Numbers with %d bits and %d '1':\n", k, l);
+    print_res(search(k, l, res, size), size);
+    printf("Numbers with %d bits and %d successive '1':\n", k, l);
+    print_res(find_one(k, l), size);
+
+    
     return 0;
 }
 
